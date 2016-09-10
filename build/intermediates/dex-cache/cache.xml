@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/gene/Desktop/Pennapps/navblind/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="b7debf8472e1c9bb3a617be7444340395bfe81eb">
+        <dex dex="/Users/gene/Desktop/Pennapps/navblind/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_37ac384d491c6794cc53d4adc6ec5aa59f0a1996/classes.dex" />
+    </item>
+
+</items>
