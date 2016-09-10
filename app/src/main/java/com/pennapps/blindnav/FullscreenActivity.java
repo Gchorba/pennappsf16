@@ -4,7 +4,9 @@ package com.pennapps.blindnav;
  * Created by Gene on 2016-09-09.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -13,9 +15,20 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
+import com.getpebble.android.kit.PebbleKit;
+import com.getpebble.android.kit.util.PebbleDictionary;
+
+import java.util.UUID;
+
 public class FullscreenActivity extends Activity implements
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener{
+    private static final int KEY_BUTTON_UP = 0;
+    private static final int KEY_BUTTON_DOWN = 1;
+
+    private static final UUID APP_UUID = UUID.fromString("3783cff2-5a14-477d-baee-b77bd423d079");
+
+    private PebbleKit.PebbleDataReceiver mDataReceiver;
 
     private static final String DEBUG_TAG = "Gestures";
     private GestureDetectorCompat mDetector;
@@ -26,7 +39,7 @@ public class FullscreenActivity extends Activity implements
     float x1,x2;
     float y1, y2;
 
-    // Called when the activity is first created. 
+    // Called when the activity is first created.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +65,30 @@ public class FullscreenActivity extends Activity implements
                 }
             }
         });
+        if(mDataReceiver == null) {
+            mDataReceiver = new PebbleKit.PebbleDataReceiver(APP_UUID) {
+
+                @Override
+                public void receiveData(Context context, int transactionId, PebbleDictionary dict) {
+                    // Always ACK
+                    PebbleKit.sendAckToPebble(context, transactionId);
+                    Log.i("receiveData", "Got message from Pebble!");
+
+                    // Up received?
+                    if (dict.getInteger(KEY_BUTTON_UP) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.upwardstairs);
+                        mediaPlayer.start();
+                    }
+                    // Down received?
+                    if (dict.getInteger(KEY_BUTTON_DOWN) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.upwardstairs);
+                        mediaPlayer.start();
+                    }
+                }
+
+            };
+            PebbleKit.registerReceivedDataHandler(getApplicationContext(), mDataReceiver);
+        }
     }
 
     @Override
