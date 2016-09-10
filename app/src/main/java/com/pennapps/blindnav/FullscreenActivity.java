@@ -14,6 +14,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.speech.tts.TextToSpeech;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
@@ -25,6 +26,11 @@ public class FullscreenActivity extends Activity implements
         GestureDetector.OnDoubleTapListener{
     private static final int KEY_BUTTON_UP = 0;
     private static final int KEY_BUTTON_DOWN = 1;
+    private static final int KEY_BUTTON_SELECT = 2;
+    private static final int KEY_LONG_SELECT = 3;
+    private static final int KEY_LONG_UP = 4;
+    private static final int KEY_LONG_DOWN = 5;
+
 
     private static final UUID APP_UUID = UUID.fromString("3783cff2-5a14-477d-baee-b77bd423d079");
 
@@ -81,7 +87,27 @@ public class FullscreenActivity extends Activity implements
                     }
                     // Down received?
                     if (dict.getInteger(KEY_BUTTON_DOWN) != null) {
-                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.upwardstairs);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.downwardstairs);
+                        mediaPlayer.start();
+                    }
+                    // select received?
+                    if (dict.getInteger(KEY_BUTTON_SELECT) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.johnarrival);
+                        mediaPlayer.start();
+                    }
+                    // long down received?
+                    if (dict.getInteger(KEY_LONG_DOWN) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.turnleft);
+                        mediaPlayer.start();
+                    }
+                    // select long received?
+                    if (dict.getInteger(KEY_LONG_SELECT) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.genearrival);
+                        mediaPlayer.start();
+                    }
+                    // up long received?
+                    if (dict.getInteger(KEY_LONG_UP) != null) {
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.turnright);
                         mediaPlayer.start();
                     }
                 }
