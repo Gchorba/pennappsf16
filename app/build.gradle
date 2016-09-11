@@ -31,5 +31,8 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'com.clarifai:clarifai-api-java:1.2.0'
     compile 'com.getpebble:pebblekit:3.0.0'
-
+    repositories {
+        jcenter()
+    }
+    compile 'org.altbeacon:android-beacon-library:2+'
 }

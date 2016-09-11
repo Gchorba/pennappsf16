@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">BlindNav</string>
+    <string name="app_name">Lantern</string>
 
-    <string name="dummy_button">Blind Navigation</string>
+    <string name="camera_button">Camera Help</string>
+    <string name="voice_button">Voice Help</string>
+
     <string name="dummy_content">
 
         Swipe Up/Down to Select\n\n

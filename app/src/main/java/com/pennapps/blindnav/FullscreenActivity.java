@@ -4,6 +4,7 @@ package com.pennapps.blindnav;
  * Created by Gene on 2016-09-09.
  */
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -15,10 +16,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.speech.tts.TextToSpeech;
+import android.net.Uri;
+import android.speech.RecognizerIntent;
+import android.widget.Toast;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 
 public class FullscreenActivity extends Activity implements
@@ -30,6 +36,7 @@ public class FullscreenActivity extends Activity implements
     private static final int KEY_LONG_SELECT = 3;
     private static final int KEY_LONG_UP = 4;
     private static final int KEY_LONG_DOWN = 5;
+    private final int SPEECH_REQUEST_CODE = 123;
 
 
     private static final UUID APP_UUID = UUID.fromString("3783cff2-5a14-477d-baee-b77bd423d079");
@@ -60,15 +67,21 @@ public class FullscreenActivity extends Activity implements
 
         controller = new NavController();
 
-        final Button button = (Button) findViewById(R.id.dummy_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button button1 = (Button) findViewById(R.id.camerabutton);
+        button1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Perform action on click
-                button.setBackgroundColor(0xFFFF0000); // 0xAARRGGBB
                 Intent launchIntent = getPackageManager().getLaunchIntentForPackage("willzma.iris");
                 if (launchIntent != null) {
                     startActivity(launchIntent);//null pointer check in case package name was not found
                 }
+            }
+        });
+        final Button button2 = (Button) findViewById(R.id.voicebutton);
+        button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Perform action on click
+                showGoogleInputDialog();
             }
         });
         if(mDataReceiver == null) {
@@ -102,7 +115,7 @@ public class FullscreenActivity extends Activity implements
                     }
                     // select long received?
                     if (dict.getInteger(KEY_LONG_SELECT) != null) {
-                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.genearrival);
+                        MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.redline);
                         mediaPlayer.start();
                     }
                     // up long received?
@@ -116,7 +129,45 @@ public class FullscreenActivity extends Activity implements
             PebbleKit.registerReceivedDataHandler(getApplicationContext(), mDataReceiver);
         }
     }
+    public void showGoogleInputDialog() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        try {
+            startActivityForResult(intent, SPEECH_REQUEST_CODE);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(), "Your device is not supported!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        switch (requestCode) {
+            case SPEECH_REQUEST_CODE: {
+                if (resultCode == RESULT_OK && null != data) {
+
+                    ArrayList<String> result = data
+                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (result.get(0).equalsIgnoreCase("take me home")){
+//                        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("me.lyft.android");
+//                        if (launchIntent != null) {
+//                            startActivity(launchIntent);//null pointer check in case package name was not found
+//                        }
+
+                        String url = "lyft://ridetype?id=lyft&destination[latitude]=39.968965&destination[longitude]=-75.217029";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                    }
+                }
+                break;
+            }
+
+        }
+    }
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
